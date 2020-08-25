@@ -6,7 +6,6 @@ use crate::articles::views::render_redirect_view;
 
 use crate::application::AppData;
 
-
 pub async fn insert_document(collection: Collection, doc: bson::Document) -> Result<bson::oid::ObjectId, String> {
   match collection.insert_one(doc, None).await {
     Ok(inserted) => match bson::from_bson(inserted.inserted_id) {
@@ -29,7 +28,6 @@ pub async fn find_one_article_by_id(db: &Database, id: bson::oid::ObjectId) -> R
     Err(e) => Err(format!("Error, cannot get document: {}", e)),
   }
 }
-
 
 pub async fn insert_article(db: &Database, article: &EditableArticle) -> Result<bson::oid::ObjectId, String> {
   match bson::to_bson(article) {
