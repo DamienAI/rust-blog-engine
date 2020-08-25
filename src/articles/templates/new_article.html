@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <title>Create article</title>
+        <style>
+          .container {
+            margin: 1rem;
+          }
+        </style>
+    </head>
+    <body>
+      <div class="container">
+        <form id="createform" action="" method="post">
+          <div class="form-group">
+            <label for="title">Arcicle title</label>
+            <input name="title" type="text" class="form-control" aria-describedby="titleNote" placeholder="Enter article title">
+            <small id="titleNote" class="form-text text-muted">plain text only.</small>
+          </div>
+          <div class="form-group">
+            <label for="description">Article description</label>
+            <textarea name="description" rows="5" class="form-control" aria-describedby="descriptionNote" placeholder="Enter article description"></textarea>
+            <small id="descriptionNote" class="form-text text-muted">plain text only.</small>
+          </div>
+          <div class="form-group">
+            <label for="content">Arcicle content</label>
+            <textarea name="content" rows="15" class="form-control" aria-describedby="contentNote" placeholder="Enter article content"></textarea>
+            <small id="contentNote" class="form-text text-muted">plain text or markdown.</small>
+          </div>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+      </body>
+    </div>
+</html>

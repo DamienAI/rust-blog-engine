@@ -1,0 +1,61 @@
+use tera::{Tera, Context};
+use actix_web::{HttpResponse, Responder, web};
+use mongodb::{bson};
+
+use crate::articles::service::find_one_article_by_id;
+use crate::application::AppData;
+
+pub struct ArticlesAppData
+{
+  templates: Tera,
+}
+
+pub fn get_app_data() -> ArticlesAppData {
+  let tera = Tera::new(
+    concat!(env!("CARGO_MANIFEST_DIR"), "/src/articles/templates/**/*")
+  ).unwrap();
+
+  ArticlesAppData{ templates: tera }
+}
+
+pub async fn render_articles_view(app_data: web::Data<AppData>) -> impl Responder {
+  let mut ctx = Context::new();
+  ctx.insert("name", "test");
+  let rendered = app_data.articles.templates.render("index.html", &ctx).unwrap();
+  HttpResponse::Ok().content_type("text/html").body(rendered)
+}
+
+pub async fn render_article_view(app_data: web::Data<AppData>, id: web::Path<String>) -> impl Responder {
+  let object_id = match bson::oid::ObjectId::with_string(id.into_inner().as_str()) {
+    Ok(result) => result,
+    Err(_) => return HttpResponse::BadRequest().body("Invalid ID"),
+  };
+
+  let article = match find_one_article_by_id(&app_data.get_ref().db, object_id).await {
+    Ok(result) => match result {
+      Some(value) => value,
+      None => return HttpResponse::NotFound().body("article not found"),
+    },
+    Err(e) => return HttpResponse::InternalServerError().body(format!("Error finding object: {}", e)),
+  };
+
+  let mut ctx = Context::new();
+  ctx.insert("title", article.title.as_str());
+  ctx.insert("content", article.content.as_str());
+  let rendered = app_data.articles.templates.render("article_view.html", &ctx).unwrap();
+  HttpResponse::Ok().content_type("text/html").body(rendered)
+}
+
+pub async fn render_new_article_view(app_data: web::Data<AppData>) -> impl Responder {
+  let ctx = Context::new();
+  let rendered = app_data.articles.templates.render("new_article.html", &ctx).unwrap();
+  HttpResponse::Ok().content_type("text/html").body(rendered)
+}
+
+pub fn render_redirect_view(app_data: web::Data<AppData>, url: String) -> HttpResponse {
+  let mut ctx = Context::new();
+  ctx.insert("url", url.as_str());
+  let rendered = app_data.articles.templates.render("redirect_view.html", &ctx).unwrap();
+  HttpResponse::Ok().content_type("text/html").body(rendered)
+}
+
