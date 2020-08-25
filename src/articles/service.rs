@@ -41,23 +41,6 @@ pub async fn insert_article(db: &Database, article: &EditableArticle) -> Result<
   }
 }
 
-/*
-pub async fn get_article(db: web::Data<Database>, id: web::Path<String>) -> impl Responder {
-  let object_id = match bson::oid::ObjectId::with_string(id.into_inner().as_str()) {
-    Ok(result) => result,
-    Err(_) => return HttpResponse::BadRequest().body("Invalid ID"),
-  };
-
-  match find_one_article_by_id(&db.into_inner(), object_id).await {
-    Ok(result) => match result {
-      Some(value) => HttpResponse::Ok().json(value),
-      None => HttpResponse::NotFound().body("article not found"),
-    },
-    Err(e) => HttpResponse::InternalServerError().body(format!("Error finding object: {}", e)),
-  }
-}
-*/
-
 // TODO MOVE ?
 pub async fn create_article(app_data: web::Data<AppData>, article: web::Form<EditableArticle>) -> impl Responder {
   let json_object_id = match insert_article(&app_data.get_ref().db, &article.into_inner()).await {
