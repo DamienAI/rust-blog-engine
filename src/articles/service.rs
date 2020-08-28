@@ -1,10 +1,8 @@
 use mongodb::{bson, Collection, Database};
-use actix_web::{web, HttpResponse, Responder};
+use pulldown_cmark::{Parser, Options, html};
+use ammonia::{clean};
 
 use crate::articles::model::{EditableArticle, Article};
-use crate::articles::views::render_redirect_view;
-
-use crate::application::AppData;
 
 pub async fn insert_document(collection: Collection, doc: bson::Document) -> Result<bson::oid::ObjectId, String> {
   match collection.insert_one(doc, None).await {
@@ -39,12 +37,17 @@ pub async fn insert_article(db: &Database, article: &EditableArticle) -> Result<
   }
 }
 
-// TODO MOVE ?
-pub async fn create_article(app_data: web::Data<AppData>, article: web::Form<EditableArticle>) -> impl Responder {
-  let json_object_id = match insert_article(&app_data.get_ref().db, &article.into_inner()).await {
-    Ok(obj_id) => obj_id,
-    Err(e) => return HttpResponse::InternalServerError().body(format!("Error inserting object: {}", e)),
-  };
+pub fn parse_markdown(markdown: &String) -> String {
+  let mut options = Options::empty();
+  options.insert(Options::ENABLE_STRIKETHROUGH);
+  let parser = Parser::new_ext(markdown.as_str(), options);
 
-  render_redirect_view(app_data, format!("{}", json_object_id))
+  let mut html_output = String::new();
+  html::push_html(&mut html_output, parser);
+
+  lysol_html(&html_output)
+}
+
+pub fn lysol_html(html: &String) -> String {
+  clean(html.as_str())
 }

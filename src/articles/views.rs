@@ -2,8 +2,9 @@ use tera::{Tera, Context};
 use actix_web::{HttpResponse, Responder, web};
 use mongodb::{bson};
 
-use crate::articles::service::find_one_article_by_id;
 use crate::application::AppData;
+use crate::articles::service::{find_one_article_by_id, insert_article, parse_markdown};
+use crate::articles::model::{EditableArticle};
 
 pub struct ArticlesAppData
 {
@@ -41,7 +42,7 @@ pub async fn render_article_view(app_data: web::Data<AppData>, id: web::Path<Str
 
   let mut ctx = Context::new();
   ctx.insert("title", article.title.as_str());
-  ctx.insert("content", article.content.as_str());
+  ctx.insert("content", parse_markdown(&article.content).as_str());
   let rendered = app_data.articles.templates.render("article_view.html", &ctx).unwrap();
   HttpResponse::Ok().content_type("text/html").body(rendered)
 }
@@ -59,3 +60,11 @@ pub fn render_redirect_view(app_data: web::Data<AppData>, url: String) -> HttpRe
   HttpResponse::Ok().content_type("text/html").body(rendered)
 }
 
+pub async fn create_article_view(app_data: web::Data<AppData>, article: web::Form<EditableArticle>) -> impl Responder {
+  let json_object_id = match insert_article(&app_data.get_ref().db, &article.into_inner()).await {
+    Ok(obj_id) => obj_id,
+    Err(e) => return HttpResponse::InternalServerError().body(format!("Error inserting object: {}", e)),
+  };
+
+  render_redirect_view(app_data, format!("{}", json_object_id))
+}

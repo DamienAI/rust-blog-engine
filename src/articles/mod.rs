@@ -7,9 +7,8 @@ use actix_web::{web};
 use actix_web::FromRequest;
 
 use crate::articles::model::EditableArticle;
-use crate::articles::service::{create_article};
 use crate::articles::handlers::{form_error_handler};
-use crate::articles::views::{render_articles_view, render_new_article_view, render_article_view};
+use crate::articles::views::{create_article_view, render_articles_view, render_new_article_view, render_article_view};
 
 pub fn configure(cfg: &mut web::ServiceConfig) {
   cfg.service(web::scope("")
@@ -20,7 +19,7 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
     }))
     .route("", web::get().to(render_articles_view))
     .route("/new", web::get().to(render_new_article_view))
-    .route("/new", web::post().to(create_article))
+    .route("/new", web::post().to(create_article_view))
     .route("/{article_id}", web::get().to(render_article_view))
   );
 }
