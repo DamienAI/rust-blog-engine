@@ -3,8 +3,8 @@ use actix_web::{HttpResponse, Responder, web};
 use mongodb::{bson};
 
 use crate::application::AppData;
-use crate::articles::service::{find_one_article_by_id, insert_article, parse_markdown};
-use crate::articles::model::{EditableArticle};
+use crate::articles::service::{find_one_article_by_id, get_articles, insert_article, parse_markdown};
+use crate::articles::model::{EditableArticle, RenderableArticle};
 
 pub struct ArticlesAppData
 {
@@ -20,9 +20,20 @@ pub fn get_app_data() -> ArticlesAppData {
 }
 
 pub async fn render_articles_view(app_data: web::Data<AppData>) -> impl Responder {
+  let articles = match get_articles(&app_data.get_ref().db).await {
+    Ok(result) => result,
+    Err(_) => return HttpResponse::InternalServerError().body("Cannot get articles from database"),
+  };
+
+  let mut renderable_articles: Vec<RenderableArticle> = Vec::new();
+  for article in &articles {
+    renderable_articles.push(RenderableArticle::from_article(article));
+  }
+
   let mut ctx = Context::new();
-  ctx.insert("name", "test");
-  let rendered = app_data.articles.templates.render("index.html", &ctx).unwrap();
+  ctx.insert("articles", &renderable_articles);
+  // TODO handle rendering error
+  let rendered = app_data.articles.templates.render("articles.html", &ctx).unwrap();
   HttpResponse::Ok().content_type("text/html").body(rendered)
 }
 

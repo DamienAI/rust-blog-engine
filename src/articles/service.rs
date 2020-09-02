@@ -1,6 +1,9 @@
-use mongodb::{bson, Collection, Database};
+use mongodb::{bson, Collection, Database, error};
 use pulldown_cmark::{Parser, Options, html};
 use ammonia::{clean};
+use chrono::{Utc};
+
+use futures::stream::StreamExt;
 
 use crate::articles::model::{EditableArticle, Article};
 
@@ -12,6 +15,31 @@ pub async fn insert_document(collection: Collection, doc: bson::Document) -> Res
     },
     Err(err) => Err(format!("Error inserting: {}", err)),
   }
+}
+
+pub async fn get_articles(db: &Database) -> Result<Vec<Article>, String> {
+  let cursor = match db.collection("Articles").find(None, None).await {
+    Ok(find_cursor) => find_cursor,
+    Err(e) => return Err(format!("Error, cannot get documents: {}", e)),
+  };
+
+  let mut articles: Vec<Article> = Vec::new();
+
+  let results: Vec<error::Result<bson::Document>> = cursor.collect().await;
+
+  for result in results {
+    match result {
+      Ok(document) => {
+        match bson::from_bson(bson::Bson::Document(document)) {
+          Ok(article) => articles.push(article),
+          Err(e) => return Err(format!("Error, cannot get documents: {}", e)),
+        };
+      },
+      Err(e) => return Err(format!("Error, cannot get documents: {}", e)),
+    }
+  }
+
+  Ok(articles)
 }
 
 pub async fn find_one_article_by_id(db: &Database, id: bson::oid::ObjectId) -> Result<Option<Article>, String> {
@@ -30,7 +58,14 @@ pub async fn find_one_article_by_id(db: &Database, id: bson::oid::ObjectId) -> R
 pub async fn insert_article(db: &Database, article: &EditableArticle) -> Result<bson::oid::ObjectId, String> {
   match bson::to_bson(article) {
     Ok(bson_object) => match bson_object {
-      bson::Bson::Document(bson_doc) => insert_document(db.collection("Articles"), bson_doc).await,
+      bson::Bson::Document(bson_doc) => {
+
+        let mut inserted_bson = bson_doc.clone();
+        let timestamp = Utc::now().timestamp();
+        inserted_bson.insert("updated", timestamp);
+        inserted_bson.insert("created", timestamp);
+        insert_document(db.collection("Articles"), inserted_bson).await
+      },
       _ => Err("Cannot create the bson document".into()),
     },
     Err(e) => Err(format!("Cannot create bson object: {}", e)),

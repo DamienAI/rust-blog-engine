@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Articles</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,200;0,400;0,500;1,400&display=swap" rel="stylesheet">
+        <style>
+          body {
+            font-family: 'Roboto', sans-serif;
+          }
+          .btn-primary {
+            background-color:#acd478;
+            border: none;
+          }
+          .btn-primary:hover { background-color:#bddc8d; }
+          
+          .btn-primary:focus {
+            outline: none;
+            background-color: #acd478;
+            box-shadow: none;
+          }
+
+          .blog-banner {
+            background-image: url("/articles/assets/banner.png");
+            background-size: cover;
+          }
+          .articles-container {
+            justify-content: center;
+          }
+
+          .article {
+            margin: 1rem auto;
+            padding: 1rem;
+            border: 1px solid #616161;
+            border-radius: 4px;
+          }
+          .title {
+            color: #292929;
+            font-weight: 500;
+            font-size: 2rem;
+          }
+          .description-container {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+          }
+          .description {
+            font-weight: 400;
+            font-size: 1rem;
+            color: #494949;
+          }
+          .more-link {
+            font-weight: 200;
+            font-size: 0.85rem;
+            color:#acd478;
+          }
+          .statistics {
+            font-weight: 200;
+            font-size: 0.8rem;
+            color: #7e7e7e;
+          }
+        </style>
+    </head>
+    <body>
+        <div class="jumbotron jumbotron-fluid blog-banner">
+          <div class="container">
+            <h1 class="display-4">Example blog</h1>
+            <p class="lead">This is an example of bootstrap based blog served by a rust backend.</p>
+            <hr>
+            <p>You can add new article using the following add button</p>
+            <p class="lead">
+              <a class="btn btn-primary btn-lg button-add" href="articles/new" role="button">+</a>
+            </p>
+          </div>
+        </div>
+        <div class="articles-container container-fluid">
+          {% for article in articles %}
+            <div class="row">
+              <div class="article col-lg-10 col-md-10 .col-sm-12 col-xs-12">
+                <div>
+                  <span>
+                    <a class="title" href="articles/{{article.id}}">
+                      {{article.title}}
+                    </a>
+                  </span>
+                </div>
+                <div>
+                  <span class="statistics">
+                    published {{article.published_str}} ago, last edited {{article.edited_str}} ago
+                  </span>
+                </div>
+                <div class="description-container">
+                  <span class="description">
+                    {{article.description}}
+                  </span>
+                </div>
+                <div>
+                  <span>
+                    <a class="more-link" href="articles/{{article.id}}">Read more →</a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+    </body>
+</html>

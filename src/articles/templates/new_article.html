@@ -5,12 +5,33 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <title>Create article</title>
         <style>
+          .btn-primary {
+            background-color:#acd478;
+            border: none;
+          }
+          .btn-primary:hover { background-color:#bddc8d; }
+          
+          .btn-primary:focus {
+            outline: none;
+            background-color: #acd478;
+            box-shadow: none;
+          }
+          .blog-banner {
+            background-image: url("/articles/assets/banner.png");
+            background-size: cover;
+          }
           .container {
             margin: 1rem;
           }
         </style>
     </head>
     <body>
+      <div class="jumbotron jumbotron-fluid blog-banner">
+        <div class="container">
+          <h1 class="display-4">Create a new article</h1>
+          <p class="lead">The content section is markdown based.</p>
+        </div>
+      </div>
       <div class="container">
         <form id="createform" action="" method="post">
           <div class="form-group">
