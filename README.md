@@ -28,16 +28,8 @@ Some simple endpoints are available:
   
 Even if some security features are enabled (like cross-origin, max-age...) there are still some headers that should be set. Also there is no auth mechanism in place.
 
-## TODO
+## Assets
 
-- [ ] Tests
+  Original idea: https://www.youtube.com/watch?v=1NrHkjlWVhM
 
-- [ ] More http headers enforcement, based on helmet js list
-
-- [ ] Review the serialization of the Object ID
-
-- [ ] OAuth2 auth support
-
-- [ ] Connect to mongo using https
-
-- [ ] Swagger UI serving ?
+  Banner from https://freedesignfile.com

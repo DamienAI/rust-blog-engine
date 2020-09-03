@@ -1,0 +1,26 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #eff8ec;
+}
+
+a {
+  color:#acd478;
+}
+
+.btn-primary {
+  background-color:#acd478;
+  border: none;
+}
+
+.btn-primary:hover { background-color:#bddc8d; }
+
+.btn-primary:focus {
+  outline: none;
+  background-color: #acd478;
+  box-shadow: none;
+}
+
+.blog-banner {
+  background-image: url("/articles/assets/banner.png");
+  background-size: cover;
+}

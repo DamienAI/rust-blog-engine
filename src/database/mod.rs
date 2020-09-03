@@ -1,5 +1,7 @@
 use mongodb::{bson, Client, options::ClientOptions, Database};
 
+/// This method tries to connect to a Mongo server and will return the handle to the requested database.
+/// *Note: It will perform a ping to the server before considering the connection successful*
 pub async fn connect(uri: &str, database: &str) -> Result<Database, String> {
   let mut client_options = match ClientOptions::parse(uri).await {
     Err(e) => return Err(format!("Error parsing mongo uri '{}': '{}'", uri, e)),

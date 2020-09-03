@@ -2,10 +2,27 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,200;0,400;0,500;1,400&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/articles/assets/articles.css">
         <title>{{title}}</title>
+        <style>
+          .article-content {
+            width: 80%;
+            margin: 2rem auto;
+          }
+        </style>
     </head>
     <body>
-        <h1> {{title}}</h1>
-        <h5> {{content | safe}}</h5>
+      <div class="jumbotron jumbotron-fluid blog-banner">
+        <div class="container">
+          <h1 class="display-4">{{title}}</h1>
+        </div>
+      </div> 
+      <div>
+        <div class="article-content">
+          <h5> {{content | safe}}</h5>
+        </div>
+      </div>
     </body>
 </html>
