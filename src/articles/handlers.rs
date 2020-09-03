@@ -1,6 +1,6 @@
 use actix_web::{error, HttpRequest, HttpResponse};
 
-// For json decoding errors
+/// handle json deconding errors and return the details about the error in the http response.
 pub fn json_error_handler(err: error::JsonPayloadError, _req: &HttpRequest) -> error::Error {
   let detail = err.to_string();
   let resp = match &err {
@@ -15,6 +15,7 @@ pub fn json_error_handler(err: error::JsonPayloadError, _req: &HttpRequest) -> e
   error::InternalError::from_response(err, resp).into()
 }
 
+/// Proccess form decoding errors and return the details in the http response.
 pub fn form_error_handler(err: error::UrlencodedError, _req: &HttpRequest) -> error::Error {
   let detail = err.to_string();
   let resp = match &err {
