@@ -11,13 +11,6 @@ static SERVER_BINDING: &str = "0.0.0.0:4000";
 static MONGODB_URI: &str = "mongodb://root:tutorial@172.21.0.2:27017";
 static MONGODB_DATABASE: &str = "tutorials";
 
-// https://www.youtube.com/watch?v=1NrHkjlWVhM
-// https://crates.io/crates/ammonia
-
-
-// Example blog
-// https://www.free-css.com/free-css-templates/page255/devblog-v1.1
-
 /// Entry point of the rest-api server
 ///
 /// # Panics
