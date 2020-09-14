@@ -6,9 +6,10 @@ use actix_web::{http::header, middleware, web, App, HttpServer};
 pub mod application;
 pub mod articles;
 pub mod database;
+pub mod middlewares;
 
 static SERVER_BINDING: &str = "0.0.0.0:4000";
-static MONGODB_URI: &str = "mongodb://root:tutorial@172.21.0.2:27017";
+static MONGODB_URI: &str = "mongodb://root:tutorial@172.21.0.3:27017";
 static MONGODB_DATABASE: &str = "tutorials";
 
 /// Entry point of the rest-api server
@@ -48,9 +49,10 @@ async fn main() -> std::io::Result<()> {
           // .allowed_origin("*")
           .allowed_methods(vec!["GET", "PATCH", "POST", "OPTIONS"])
           .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT, header::CONTENT_TYPE])
-          .max_age(500)
+          .max_age(86400)
           .finish()
       )
+      .wrap(middlewares::security::handler())
       .service(
         web::scope("/articles")
           .configure(articles::configure)

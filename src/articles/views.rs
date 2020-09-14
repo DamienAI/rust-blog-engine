@@ -3,6 +3,7 @@ use actix_web::{HttpResponse, Responder, web};
 use mongodb::{bson};
 
 use crate::application::AppData;
+use crate::articles::{get_data_directory};
 use crate::articles::service::{find_one_article_by_id, get_articles, insert_article, parse_markdown};
 use crate::articles::model::{EditableArticle, RenderableArticle};
 
@@ -16,9 +17,9 @@ pub struct ArticlesAppData
 
 /// Provides the application data for the articles.
 pub fn get_app_data() -> ArticlesAppData {
-  let tera = Tera::new(
-    concat!(env!("CARGO_MANIFEST_DIR"), "/src/articles/templates/**/*")
-  ).unwrap();
+  let templates_directory = format!("{}/templates/**/*", get_data_directory());
+  println!("DATA DIR: {}", templates_directory);
+  let tera = Tera::new(templates_directory.as_str()).unwrap();
 
   ArticlesAppData{ templates: tera }
 }
@@ -37,9 +38,11 @@ pub async fn render_articles_view(app_data: web::Data<AppData>) -> impl Responde
 
   let mut ctx = Context::new();
   ctx.insert("articles", &renderable_articles);
-  // TODO handle rendering error
-  let rendered = app_data.articles.templates.render("articles.html", &ctx).unwrap();
-  HttpResponse::Ok().content_type("text/html").body(rendered)
+
+  match app_data.articles.templates.render("articles.html", &ctx) {
+    Ok(view) => HttpResponse::Ok().content_type("text/html").body(view),
+    Err(e) => HttpResponse::InternalServerError().body(format!("Error rendering view: {}", e)),
+  }
 }
 
 /// Render the page for a specific article.

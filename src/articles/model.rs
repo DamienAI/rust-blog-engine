@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-
+use chrono::{Utc, NaiveDateTime, DateTime};
 use mongodb::{bson};
 
 /// Actual article model as it is saved in the Mongo database.
@@ -37,6 +37,18 @@ pub struct RenderableArticle {
   pub edited_str: String,
 }
 
+fn get_elapsed_time_str(timestamp: i64) -> String {
+  let dt = DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(timestamp, 0), Utc);
+  let duration = Utc::now().signed_duration_since(dt);
+  if duration.num_days() > 0 {
+    return format!("{} days", duration.num_days())
+  } else if duration.num_hours() > 0 {
+    return format!("{} hours", duration.num_hours())
+  }
+
+  format!("{} minutes", duration.num_minutes())
+}
+
 impl RenderableArticle {
   /// Convert an article to a renderable article.
   /// 
@@ -48,8 +60,8 @@ impl RenderableArticle {
       title: article.title.clone(),
       description: article.description.clone(),
       content: article.content.clone(),
-      published_str: "2 days".to_string(),
-      edited_str: "1 day".to_string(),
+      published_str: get_elapsed_time_str(article.created),
+      edited_str: get_elapsed_time_str(article.updated),
     }
   }
 }

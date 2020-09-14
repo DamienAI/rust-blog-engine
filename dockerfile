@@ -6,6 +6,8 @@ COPY . .
 RUN cargo build --release
 
 FROM debian:buster-slim
-COPY --from=builder /usr/src/backend/target/release/rust-backend-example /usr/local/bin/backend
+RUN apt-get update && apt-get install -y libssl1.1 && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /usr/src/backend/target/release/rust-blog-backend /app/backend
+COPY ./src/articles/data /app/data
 
-CMD ["backend"]
+CMD ["/app/backend"]

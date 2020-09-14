@@ -1,0 +1,37 @@
+.articles-container {
+  justify-content: center;
+}
+
+.button-add {
+  border-radius: 50%;
+}
+
+.article {
+  margin: 1rem auto;
+  padding: 1rem;
+  border: 1px solid #dfe8dc;
+  border-radius: 8px;
+}
+.title {
+  color: #292929;
+  font-weight: 500;
+  font-size: 2rem;
+}
+.description-container {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.description {
+  font-weight: 400;
+  font-size: 1rem;
+  color: #494949;
+}
+.more-link {
+  font-weight: 200;
+  font-size: 0.85rem;
+}
+.statistics {
+  font-weight: 200;
+  font-size: 0.8rem;
+  color: #7e7e7e;
+}
